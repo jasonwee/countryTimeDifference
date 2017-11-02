@@ -17,3 +17,9 @@ gradle eclipse
 
 javafx
 https://docs.oracle.com/javafx/2/get_started/jfxpub-get_started.htm
+
+how to package
+/usr/lib/jvm/jdk1.8.0_74/bin/javapackager -createjar -appclass net.opentracker.app.HelloWorld -srcdir build/classes/main/ -outdir build -outfile helloworld.jar -v
+
+how to run after package
+sr/lib/jvm/jdk1.8.0_74/bin/java -jar build/helloworld.jar
