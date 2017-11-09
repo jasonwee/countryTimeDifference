@@ -15,7 +15,7 @@ apply plugin: 'application'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-mainClassName = 'net.opentracker.app.HelloWorld'
+mainClassName = 'net.opentracker.app.TimeDiffApp'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
