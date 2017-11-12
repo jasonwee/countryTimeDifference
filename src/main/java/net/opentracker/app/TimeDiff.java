@@ -65,54 +65,86 @@ public class TimeDiff extends Parent {
 		getChildren().addAll(keys);
 		*/
 		
-		Text fromCountry = new Text("Malaysia");
-		fromCountry.setFont(Font.font(null, FontWeight.BOLD, 15));
-		fromCountry.setX(150);
-		fromCountry.setY(50);
+		// label
+		Text fromCountryMY = new Text("Malaysia");
+		fromCountryMY.setFont(Font.font(null, FontWeight.BOLD, 15));
+		fromCountryMY.setX(140);
+		fromCountryMY.setY(50);
 		
-		Text arrow = new Text("->");
-		arrow.setFont(Font.font(null, FontWeight.BOLD, 15));
-		arrow.setX(260);
-		arrow.setY(50);
-		
-		Text toCountry = new Text("Netherlands");
-		toCountry.setFont(Font.font(null, FontWeight.BOLD, 15));
-		toCountry.setX(330);
-		toCountry.setY(50);
+		Text show = new Text("show");
+		show.setFont(Font.font(null, FontWeight.BOLD, 15));
+		show.setX(255);
+		show.setY(50);
 
-	    LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formatedDateTime = now.format(formatter);        
+		Text toCountryNL = new Text("Netherlands");
+		toCountryNL.setFont(Font.font(null, FontWeight.BOLD, 15));
+		toCountryNL.setX(330);
+		toCountryNL.setY(50);
+		// label
 
-		TextField fromCountryTime = new TextField(formatedDateTime);
-		fromCountryTime.setLayoutX(50);
-		fromCountryTime.setLayoutY(100);
-		fromCountryTime.setMaxWidth(200);
+		LocalDateTime now = LocalDateTime.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String formatedDateTime = now.format(formatter);
+
+		// from MY to NL
+		TextField fromCountryKLTime = new TextField(formatedDateTime);
+		fromCountryKLTime.setLayoutX(50);
+		fromCountryKLTime.setLayoutY(80);
+		fromCountryKLTime.setMaxWidth(200);
+
+		Button btnConvertKL2Ams = new Button("->");
+		btnConvertKL2Ams.setLayoutX(260);
+		btnConvertKL2Ams.setLayoutY(80);
+
+		TextField toCountryNLTime = new TextField("yyyy-MM-dd HH:mm:ss");
+
+		toCountryNLTime.setLayoutX(330);
+		toCountryNLTime.setLayoutY(80);
+		toCountryNLTime.setMaxWidth(200);
+		toCountryNLTime.setEditable(false);
+
+		btnConvertKL2Ams.setOnMouseClicked((MouseEvent e) -> {
+			String time = convertDateTime(fromCountryKLTime.getText(), "Asia/Kuala_Lumpur", "yyyy-MM-dd HH:mm:ss", "Europe/Amsterdam");
+			toCountryNLTime.setText(time);
+		});
+		// from MY to NL
 		
-		Button btnConvert = new Button("show");
-		btnConvert.setLayoutX(250);
-		btnConvert.setLayoutY(100);
 		
-		TextField toCountryTime = new TextField("yyyy-MM-dd HH:mm:ss");
+		// from NL to MY
+		now = LocalDateTime.now(ZoneId.of("Europe/Amsterdam"));
+		String AmsDateTime = now.format(formatter);
 		
-		toCountryTime.setLayoutX(330);
-		toCountryTime.setLayoutY(100);
-		toCountryTime.setMaxWidth(200);
-		toCountryTime.setEditable(false);
+		TextField fromCountryNLTime = new TextField(AmsDateTime);
+		fromCountryNLTime.setLayoutX(330);
+		fromCountryNLTime.setLayoutY(150);
+		fromCountryNLTime.setMaxWidth(200);
 		
+		Button btnConvertAms2KL = new Button("<-");
+		btnConvertAms2KL.setLayoutX(260);
+		btnConvertAms2KL.setLayoutY(150);
 		
-		btnConvert.setOnMouseClicked((MouseEvent e) -> {			
-			String time = convertDateTime(fromCountryTime.getText(), "yyyy-MM-dd HH:mm:ss", "Asia/Kuala_Lumpur");
-			toCountryTime.setText(time);
-			});
+		TextField toCountryKLTime = new TextField("yyyy-MM-dd HH:mm:ss");
 		
+		toCountryKLTime.setLayoutX(50);
+		toCountryKLTime.setLayoutY(150);
+		toCountryKLTime.setMaxWidth(200);
+		toCountryKLTime.setEditable(false);
 		
-		getChildren().add(fromCountry);
-		getChildren().add(arrow);
-		getChildren().add(toCountry);
-		getChildren().add(fromCountryTime);
-		getChildren().add(btnConvert);
-		getChildren().add(toCountryTime);
+		btnConvertAms2KL.setOnMouseClicked((MouseEvent e) -> {
+			String time = convertDateTime(fromCountryNLTime.getText(), "Europe/Amsterdam", "yyyy-MM-dd HH:mm:ss", "Asia/Kuala_Lumpur");
+			toCountryKLTime.setText(time);
+		});
+		// from NL to MY
+
+		getChildren().add(fromCountryMY);
+		getChildren().add(show);
+		getChildren().add(toCountryNL);
+		getChildren().add(fromCountryKLTime);
+		getChildren().add(btnConvertKL2Ams);
+		getChildren().add(toCountryNLTime);
+		getChildren().add(fromCountryNLTime);
+		getChildren().add(btnConvertAms2KL);
+		getChildren().add(toCountryKLTime);
 	}
 	
 	private void init() {
@@ -516,28 +548,27 @@ public class TimeDiff extends Parent {
 		keyNavigatorActive = false;
 	}
 	
-	public String convertDateTime(String currentDateTime, String dateFormat, String timeZone) {
-		
-	    LocalDateTime ldt = LocalDateTime.parse(currentDateTime, DateTimeFormatter.ofPattern(dateFormat));
+	public String convertDateTime(String fromDateTime, String fromTZ, String dateFormat, String toTZ) {
+		LocalDateTime ldt = LocalDateTime.parse(fromDateTime, DateTimeFormatter.ofPattern(dateFormat));
 
-	    ZoneId KLZoneId = ZoneId.of(timeZone);
-	    System.out.println("TimeZone : " + KLZoneId);
+	    ZoneId fromZoneId = ZoneId.of(fromTZ);
+	    System.out.println("from TimeZone : " + fromZoneId);
 
-	    ZonedDateTime asiaZonedDateTime = ldt.atZone(KLZoneId);
-	    System.out.println("Date (Kuala Lumpur) : " + asiaZonedDateTime);
+	    ZonedDateTime fromZonedDateTime = ldt.atZone(fromZoneId);
+	    System.out.println("Date (from) : " + fromZonedDateTime);
 
-	    ZoneId amsterdamZoneId = ZoneId.of("Europe/Amsterdam");
-	    System.out.println("TimeZone : " + amsterdamZoneId);
+	    ZoneId toZoneId = ZoneId.of(toTZ);
+	    System.out.println("to TimeZone : " + toZoneId);
 
-	    ZonedDateTime amsDateTime = asiaZonedDateTime.withZoneSameInstant(amsterdamZoneId);
-	    System.out.println("Date (Amsterdam) : " + amsDateTime);
+	    ZonedDateTime toDateTime = fromZonedDateTime.withZoneSameInstant(toZoneId);
+	    System.out.println("Date (to) : " + toDateTime);
 
 	    DateTimeFormatter format = DateTimeFormatter.ofPattern(dateFormat);
 	    System.out.println("\n---DateTimeFormatter---");
-	    System.out.println("Date (Kuala Lumpur) : " + format.format(asiaZonedDateTime));
-	    System.out.println("Date (Amsterdam) : " + format.format(amsDateTime));
+	    System.out.println("Date (from) : " + format.format(fromZonedDateTime));
+	    System.out.println("Date (to) : " + format.format(toDateTime));
 	    
-	    return format.format(amsDateTime);
+	    return format.format(toDateTime);
 	}
 
 
