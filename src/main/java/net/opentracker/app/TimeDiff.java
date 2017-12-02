@@ -147,6 +147,10 @@ public class TimeDiff extends Parent {
 		getChildren().add(toCountryKLTime);
 	}
 	
+	public TimeDiff(Boolean dummy) {
+		
+	}
+	
 	private void init() {
 		createBackground();
         createNumberBackground();
